@@ -5,94 +5,249 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VPS Panel</title>
 <style>
-:root{--bg:#0f1218;--card:#181d27;--txt:#e6e9ef;--mut:#8a93a6;--acc:#4f8cff;--warn:#f1c40f;--bad:#e74c3c;--line:#262d3b}
+:root{--bg:#05070d;--panel:#0b1020;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--mut:#64748b;--blue:#3b82f6;--blue2:#1d4ed8;--cyan:#38bdf8;--bad:#ef4444;--ok:#22c55e}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:20px}
-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-h1{font-size:1.4rem;margin:0}
-.sub{color:var(--mut);font-size:.85rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.card{background:var(--card);border-radius:12px;padding:16px;min-width:0}
-.card h2{font-size:.8rem;margin:0 0 12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
-.big{font-size:1.8rem;font-weight:700}
-.row{display:flex;justify-content:space-between;gap:8px;font-size:.85rem;color:var(--mut);margin-top:8px;flex-wrap:wrap}
-.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:8px}
-.bar>div{height:100%;background:var(--acc);transition:width .4s}
-.kv{display:flex;justify-content:space-between;font-size:.85rem;padding:5px 0;border-bottom:1px solid var(--line);gap:8px}
-.kv:last-child{border-bottom:none}
-table{width:100%;border-collapse:collapse;font-size:.85rem}
-td,th{padding:6px 4px;text-align:left;border-bottom:1px solid var(--line)}
-th{color:var(--mut);font-weight:500}
-.err{color:var(--bad)}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif}
+body{min-height:100vh;background:radial-gradient(1000px 500px at 12% -10%,rgba(29,78,216,.22),transparent 60%),radial-gradient(800px 400px at 100% 0%,rgba(56,189,248,.08),transparent 60%),var(--bg)}
+.wrap{max-width:1280px;margin:0 auto;padding:24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:20px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-weight:800;font-size:13px;box-shadow:0 0 24px rgba(59,130,246,.35)}
+h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.3px}
+.sub{color:var(--mut);font-size:12px;margin-top:2px}
+.status{display:flex;align-items:center;gap:20px;flex-wrap:wrap;color:var(--mut);font-size:12px}
+.pill{display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pulse 2s infinite}
+.dot.off{background:var(--bad);box-shadow:0 0 10px var(--bad);animation:none}
+@keyframes pulse{50%{opacity:.35}}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.span2{grid-column:span 2}
+.full{grid-column:1/-1}
+@media(max-width:700px){.span2{grid-column:auto}}
+.card{position:relative;overflow:hidden;min-width:0;padding:18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--card),var(--panel))}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));opacity:.7}
+.label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.value{margin:8px 0 2px;font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
+.value small{margin-left:4px;font-size:14px;font-weight:500;color:var(--mut)}
+.meta{font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums}
+.bar{height:6px;margin:12px 0 8px;border-radius:3px;background:#172036;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--blue2),var(--cyan));transition:width .5s ease}
+.bar>i.hot{background:linear-gradient(90deg,#b91c1c,var(--bad))}
+.spark{width:100%;height:70px;display:block;margin-top:10px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.row:last-child{border-bottom:0}
+.row span:last-child{font-variant-numeric:tabular-nums;color:var(--cyan)}
+.net{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.net .value{font-size:24px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.mini{width:140px;height:5px;border-radius:3px;background:#172036;overflow:hidden}
+.mini>i{display:block;height:100%;background:linear-gradient(90deg,var(--blue2),var(--cyan))}
+.empty{color:var(--mut);font-size:13px;padding:8px 0}
+footer{margin-top:28px;text-align:center;color:var(--mut);font-size:11px;letter-spacing:.08em}
 </style>
 </head>
 <body>
+<div class="wrap">
+
 <header>
-  <h1>🖥️ VPS Panel</h1>
-  <div class="sub" id="meta">Connexion...</div>
+  <div class="brand">
+    <div class="logo">VPS</div>
+    <div>
+      <h1 id="host">—</h1>
+      <div class="sub" id="os">—</div>
+    </div>
+  </div>
+  <div class="status">
+    <div class="pill"><span class="dot" id="dot"></span><span id="state">Connexion…</span></div>
+    <div>Uptime <strong id="uptime" style="color:var(--txt)">—</strong></div>
+    <div id="clock">—</div>
+  </div>
 </header>
-<div class="grid" id="grid"></div>
+
+<main>
+  <section class="grid">
+    <div class="card">
+      <div class="label">Processeur</div>
+      <div class="value" id="cpu">—</div>
+      <div class="bar"><i id="cpu-bar"></i></div>
+      <div class="meta" id="cpu-meta">—</div>
+      <svg class="spark" id="spark-cpu" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
+    </div>
+
+    <div class="card">
+      <div class="label">Mémoire RAM</div>
+      <div class="value" id="ram">—</div>
+      <div class="bar"><i id="ram-bar"></i></div>
+      <div class="meta" id="ram-meta">—</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Swap</div>
+      <div class="value" id="swap">—</div>
+      <div class="bar"><i id="swap-bar"></i></div>
+      <div class="meta" id="swap-meta">—</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Disque /</div>
+      <div class="value" id="disk">—</div>
+      <div class="bar"><i id="disk-bar"></i></div>
+      <div class="meta" id="disk-meta">—</div>
+    </div>
+
+    <div class="card span2">
+      <div class="label">Réseau</div>
+      <div class="net" style="margin-top:8px">
+        <div>
+          <div class="meta">Réception ↓</div>
+          <div class="value" id="rx">—</div>
+          <svg class="spark" id="spark-rx" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
+        </div>
+        <div>
+          <div class="meta">Émission ↑</div>
+          <div class="value" id="tx">—</div>
+          <svg class="spark" id="spark-tx" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+      <div class="meta" id="net-total" style="margin-top:8px">—</div>
+    </div>
+
+    <div class="card">
+      <div class="label">Températures</div>
+      <div id="temps" style="margin-top:10px"></div>
+    </div>
+
+    <div id="gpus" style="display:contents"></div>
+
+    <div class="card full">
+      <div class="label">Processus les plus gourmands (RAM)</div>
+      <div style="overflow-x:auto;margin-top:10px">
+        <table>
+          <thead><tr><th>PID</th><th>Nom</th><th>RAM</th><th></th></tr></thead>
+          <tbody id="procs"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>VPS PANEL · MISE À JOUR TOUTES LES 2 SECONDES</footer>
+</div>
 
 <script>
-const fmtBytes = n => {
-  const u = ['B', 'KB', 'MB', 'GB', 'TB'];
-  let i = 0;
-  while (n >= 1024 && i < u.length - 1) { n /= 1024; i++; }
-  return n.toFixed(i ? 1 : 0) + ' ' + u[i];
-};
-const fmtRate = n => fmtBytes(n) + '/s';
-const fmtUp = s => {
-  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
-  return (d ? d + 'j ' : '') + h + 'h ' + m + 'min';
-};
+const $ = id => document.getElementById(id);
+const N = 60;
+const hist = { cpu: [], rx: [], tx: [] };
+
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const bar = p => {
-  const color = p > 85 ? 'var(--bad)' : p > 60 ? 'var(--warn)' : 'var(--acc)';
-  return `<div class="bar"><div style="width:${Math.min(p, 100)}%;background:${color}"></div></div>`;
+const bytes = b => {
+  const u = ['o','Ko','Mo','Go','To']; let v = Number(b) || 0, i = 0;
+  while (v >= 1024 && i < 4) { v /= 1024; i++; }
+  return v.toFixed(i ? 1 : 0) + ' ' + u[i];
 };
-const card = (title, body) => `<div class="card"><h2>${title}</h2>${body}</div>`;
-const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><span>${esc(v)}</span></div>`;
+const rate = b => bytes(b) + '/s';
+const uptime = s => {
+  s = Math.floor(s);
+  const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+  return (d ? d + 'j ' : '') + h + 'h ' + String(m).padStart(2, '0') + 'min';
+};
+const bar = (id, v) => { const el = $(id); el.style.width = Math.min(v, 100) + '%'; el.classList.toggle('hot', v >= 90); };
+const push = (arr, v) => { arr.push(v); if (arr.length > N) arr.shift(); };
+
+function spark(id, arr) {
+  const svg = $(id), w = 300, h = 70;
+  if (arr.length < 2) { svg.innerHTML = ''; return; }
+  const max = Math.max(1, ...arr), step = w / (N - 1);
+  const pts = arr.map((v, i) => {
+    const x = (N - arr.length + i) * step, y = h - (v / max) * (h - 6) - 3;
+    return x.toFixed(1) + ',' + y.toFixed(1);
+  }).join(' ');
+  svg.innerHTML = `
+    <defs><linearGradient id="g-${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b82f6" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#3b82f6" stop-opacity="0"/>
+    </linearGradient></defs>
+    <polygon points="0,${h} ${pts} ${w},${h}" fill="url(#g-${id})"/>
+    <polyline points="${pts}" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
+}
+
+function gpuCards(gpus) {
+  if (!gpus || !gpus.length) return '';
+  return gpus.map(g => {
+    const vram = g.mem_total ? (100 * g.mem_used / g.mem_total) : 0;
+    return `
+    <div class="card">
+      <div class="label">GPU · ${esc(g.name)}</div>
+      <div class="value">${g.util.toFixed(0)}<small>%</small></div>
+      <div class="bar"><i class="${g.util >= 90 ? 'hot' : ''}" style="width:${Math.min(g.util,100)}%"></i></div>
+      <div class="row"><span>VRAM</span><span>${g.mem_used.toFixed(0)} / ${g.mem_total.toFixed(0)} Mo</span></div>
+      <div class="row"><span>Température</span><span>${g.temp.toFixed(0)} °C</span></div>
+    </div>`;
+  }).join('');
+}
 
 function render(d) {
-  const cards = [
-    card('CPU', `<div class="big">${d.cpu.percent.toFixed(1)}%</div>${bar(d.cpu.percent)}
-      <div class="row"><span>${d.cpu.count} cœurs</span><span>Load ${d.cpu.load.map(x => x.toFixed(2)).join(' / ')}</span></div>`),
+  $('host').textContent = d.hostname;
+  $('os').textContent = d.os;
+  $('uptime').textContent = uptime(d.uptime_s);
+  $('clock').textContent = new Date().toLocaleTimeString('fr-FR');
 
-    card('RAM', `<div class="big">${d.ram.percent.toFixed(1)}%</div>${bar(d.ram.percent)}
-      <div class="row"><span>${fmtBytes(d.ram.used)} / ${fmtBytes(d.ram.total)}</span><span>Swap ${d.swap.percent.toFixed(0)}%</span></div>`),
+  const c = d.cpu.percent;
+  $('cpu').innerHTML = c.toFixed(1) + '<small>%</small>';
+  bar('cpu-bar', c);
+  $('cpu-meta').textContent = `${d.cpu.count} cœurs · charge ${d.cpu.load.map(x => x.toFixed(2)).join(' / ')}`;
+  push(hist.cpu, c); spark('spark-cpu', hist.cpu);
 
-    card('Disque /', `<div class="big">${d.disk.percent.toFixed(1)}%</div>${bar(d.disk.percent)}
-      <div class="row"><span>${fmtBytes(d.disk.used)} / ${fmtBytes(d.disk.total)}</span></div>`),
+  const r = d.ram.percent;
+  $('ram').innerHTML = r.toFixed(1) + '<small>%</small>';
+  bar('ram-bar', r);
+  $('ram-meta').textContent = `${bytes(d.ram.used)} / ${bytes(d.ram.total)}`;
 
-    card('Réseau', `<div class="row" style="margin:0;font-size:1.1rem;color:var(--txt)">
-        <span>↓ ${fmtRate(d.net.rx_bps)}</span><span>↑ ${fmtRate(d.net.tx_bps)}</span></div>
-      <div class="row"><span>Reçu ${fmtBytes(d.net.rx_total)}</span><span>Envoyé ${fmtBytes(d.net.tx_total)}</span></div>`),
+  const s = d.swap.percent;
+  $('swap').innerHTML = s.toFixed(1) + '<small>%</small>';
+  bar('swap-bar', s);
+  $('swap-meta').textContent = `${bytes(d.swap.used)} / ${bytes(d.swap.total)}`;
 
-    card('Températures', Object.keys(d.temps).length
-      ? Object.entries(d.temps).map(([k, v]) => kv(k, v + ' °C')).join('')
-      : '<div class="row">Aucun capteur exposé (fréquent sur un VPS)</div>'),
+  const k = d.disk.percent;
+  $('disk').innerHTML = k.toFixed(1) + '<small>%</small>';
+  bar('disk-bar', k);
+  $('disk-meta').textContent = `${bytes(d.disk.used)} / ${bytes(d.disk.total)}`;
 
-    ...d.gpus.map(g => card('GPU · ' + esc(g.name), `<div class="big">${g.util.toFixed(0)}%</div>${bar(g.util)}
-      <div class="row"><span>VRAM ${g.mem_used.toFixed(0)} / ${g.mem_total.toFixed(0)} Mo</span><span>${g.temp} °C</span></div>`)),
+  $('rx').textContent = rate(d.net.rx_bps);
+  $('tx').textContent = rate(d.net.tx_bps);
+  $('net-total').textContent = `Total depuis le démarrage : ↓ ${bytes(d.net.rx_total)} · ↑ ${bytes(d.net.tx_total)}`;
+  push(hist.rx, d.net.rx_bps); push(hist.tx, d.net.tx_bps);
+  spark('spark-rx', hist.rx); spark('spark-tx', hist.tx);
 
-    card('Top processus (RAM)', `<table><tr><th>Nom</th><th>PID</th><th>RAM</th></tr>
-      ${d.processes.map(p => `<tr><td>${esc(p.name)}</td><td>${p.pid}</td><td>${p.mem.toFixed(1)}%</td></tr>`).join('')}
-      </table>`),
+  const temps = Object.entries(d.temps || {});
+  $('temps').innerHTML = temps.length
+    ? temps.map(([n, v]) => `<div class="row"><span>${esc(n)}</span><span>${v.toFixed(1)} °C</span></div>`).join('')
+    : '<div class="empty">Non exposé par ce VPS (virtualisé)</div>';
 
-    card('Système', kv('Uptime', fmtUp(d.uptime_s)) + kv('OS', d.os))
-  ];
+  $('gpus').innerHTML = gpuCards(d.gpus);
 
-  document.getElementById('grid').innerHTML = cards.join('');
-  document.getElementById('meta').textContent =
-    d.hostname + ' · mis à jour ' + new Date().toLocaleTimeString('fr-FR');
+  $('procs').innerHTML = (d.processes || []).map(p => `
+    <tr>
+      <td>${p.pid}</td>
+      <td>${esc(p.name)}</td>
+      <td>${p.mem.toFixed(1)} %</td>
+      <td><div class="mini"><i style="display:block;height:100%;width:${Math.min(p.mem * 4, 100)}%;background:linear-gradient(90deg,#1d4ed8,#38bdf8)"></i></div></td>
+    </tr>`).join('');
 }
 
 async function tick() {
   try {
     const res = await fetch('/api/metrics', { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status);
     render(await res.json());
+    $('dot').classList.remove('off');
+    $('state').textContent = 'En direct';
   } catch (e) {
-    document.getElementById('meta').innerHTML = '<span class="err">Connexion perdue</span>';
+    $('dot').classList.add('off');
+    $('state').textContent = 'Hors ligne';
   }
 }
 
