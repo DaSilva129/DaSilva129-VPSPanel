@@ -1,4 +1,4 @@
-# VPS Panel
+# DaSilva129-VPSPanel
 
 Mini tableau de bord de monitoring pour serveur Linux : CPU, RAM, swap, disque, débit réseau, températures, GPU NVIDIA et top processus.
 
@@ -19,8 +19,8 @@ Pas de dépendance lourde : un seul script Python (`psutil`) et une page HTML qu
 ## Installation rapide
 
 ```bash
-git clone https://github.com/DaSilva129/vps-panel.git
-cd vps-panel
+git clone https://github.com/DaSilva129/DaSilva129-VPSPanel.git
+cd DaSilva129-VPSPanel
 sudo ./install.sh
 ```
 
