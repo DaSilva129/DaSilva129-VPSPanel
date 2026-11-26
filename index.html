@@ -5,48 +5,80 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>VPS Panel</title>
 <style>
-:root{--bg:#05070d;--panel:#0b1020;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--mut:#64748b;--blue:#3b82f6;--blue2:#1d4ed8;--cyan:#38bdf8;--bad:#ef4444;--ok:#22c55e}
+:root{--bg:#05070d;--panel:#0b1020;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--mut:#7c8aa5;--blue:#3b82f6;--blue2:#1d4ed8;--cyan:#38bdf8;--ok:#22c55e;--warn:#f59e0b;--crit:#ef4444}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif}
 body{min-height:100vh;background:radial-gradient(1000px 500px at 12% -10%,rgba(29,78,216,.22),transparent 60%),radial-gradient(800px 400px at 100% 0%,rgba(56,189,248,.08),transparent 60%),var(--bg)}
 .wrap{max-width:1280px;margin:0 auto;padding:24px}
-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:20px;margin-bottom:24px;border-bottom:1px solid var(--line)}
+svg.i{width:18px;height:18px;flex:none}
+.ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(59,130,246,.12);color:var(--cyan);border:1px solid rgba(59,130,246,.25)}
+.ic svg{width:18px;height:18px}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-weight:800;font-size:13px;box-shadow:0 0 24px rgba(59,130,246,.35)}
-h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.3px}
-.sub{color:var(--mut);font-size:12px;margin-top:2px}
-.status{display:flex;align-items:center;gap:20px;flex-wrap:wrap;color:var(--mut);font-size:12px}
+.logo{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 0 24px rgba(59,130,246,.35)}
+.logo svg{width:22px;height:22px}
+h1{font-size:18px;margin:0;font-weight:700}
+.sub{color:var(--mut);font-size:12px}
+.status{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--mut);font-size:12px}
 .pill{display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel)}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pulse 2s infinite}
-.dot.off{background:var(--bad);box-shadow:0 0 10px var(--bad);animation:none}
+.dot.off{background:var(--crit);box-shadow:0 0 10px var(--crit);animation:none}
 @keyframes pulse{50%{opacity:.35}}
+
+.health{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;border:1px solid rgba(34,197,94,.35);background:linear-gradient(90deg,rgba(34,197,94,.10),transparent 70%);margin-bottom:20px}
+.health .ic{color:var(--ok);border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.12)}
+.health.warn{border-color:rgba(245,158,11,.4);background:linear-gradient(90deg,rgba(245,158,11,.12),transparent 70%)}
+.health.warn .ic{color:var(--warn);border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.12)}
+.health.crit{border-color:rgba(239,68,68,.45);background:linear-gradient(90deg,rgba(239,68,68,.12),transparent 70%)}
+.health.crit .ic{color:var(--crit);border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12)}
+.health b{display:block;font-size:15px}
+.health span{color:var(--mut);font-size:13px}
+
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .span2{grid-column:span 2}
 .full{grid-column:1/-1}
 @media(max-width:700px){.span2{grid-column:auto}}
+.kpi{margin-bottom:16px}
+
 .card{position:relative;overflow:hidden;min-width:0;padding:18px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--card),var(--panel))}
 .card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));opacity:.7}
-.label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
-.value{margin:8px 0 2px;font-size:30px;font-weight:700;font-variant-numeric:tabular-nums}
-.value small{margin-left:4px;font-size:14px;font-weight:500;color:var(--mut)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.title{display:flex;align-items:center;gap:10px;font-weight:600}
+.title small{display:block;font-weight:400;color:var(--mut);font-size:12px}
+.badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.badge.ok{color:var(--ok);background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
+.badge.warn{color:var(--warn);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35)}
+.badge.crit{color:var(--crit);background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.35)}
+.badge.info{color:var(--cyan);background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3)}
+.value{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.value small{font-size:14px;color:var(--mut);font-weight:500;margin-left:4px}
+.explain{color:var(--mut);font-size:12.5px;margin:6px 0 0}
+.bar{height:7px;margin:12px 0 4px;border-radius:4px;background:#172036;overflow:hidden}
+.bar>i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,var(--blue2),var(--cyan));transition:width .5s ease}
+.bar>i.warn{background:linear-gradient(90deg,#b45309,var(--warn))}
+.bar>i.crit{background:linear-gradient(90deg,#b91c1c,var(--crit))}
 .meta{font-size:12px;color:var(--mut);font-variant-numeric:tabular-nums}
-.bar{height:6px;margin:12px 0 8px;border-radius:3px;background:#172036;overflow:hidden}
-.bar>i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--blue2),var(--cyan));transition:width .5s ease}
-.bar>i.hot{background:linear-gradient(90deg,#b91c1c,var(--bad))}
-.spark{width:100%;height:70px;display:block;margin-top:10px}
-.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.spark{width:100%;height:64px;display:block;margin-top:10px}
+.legend{font-size:11px;color:var(--mut);margin-top:4px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
 .row:last-child{border-bottom:0}
-.row span:last-child{font-variant-numeric:tabular-nums;color:var(--cyan)}
+.row .k{color:var(--mut)}
+.row .v{font-variant-numeric:tabular-nums;font-weight:600}
 .net{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .net .value{font-size:24px}
+.dir{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:12px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
-td{padding:10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap}
 tr:last-child td{border-bottom:0}
-.mini{width:140px;height:5px;border-radius:3px;background:#172036;overflow:hidden}
+.mini{width:120px;height:6px;border-radius:3px;background:#172036;overflow:hidden}
 .mini>i{display:block;height:100%;background:linear-gradient(90deg,var(--blue2),var(--cyan))}
-.empty{color:var(--mut);font-size:13px;padding:8px 0}
-footer{margin-top:28px;text-align:center;color:var(--mut);font-size:11px;letter-spacing:.08em}
+.empty{color:var(--mut);font-size:13px;padding:6px 0;display:flex;gap:8px;align-items:center}
+.scale{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:28px;font-size:12px;color:var(--mut)}
+.scale span{display:flex;align-items:center;gap:6px}
+.scale i{width:8px;height:8px;border-radius:50%}
+footer{margin-top:14px;text-align:center;color:var(--mut);font-size:11px;letter-spacing:.06em}
 </style>
 </head>
 <body>
@@ -54,87 +86,170 @@ footer{margin-top:28px;text-align:center;color:var(--mut);font-size:11px;letter-
 
 <header>
   <div class="brand">
-    <div class="logo">VPS</div>
+    <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></div>
     <div>
-      <h1 id="host">—</h1>
+      <h1 id="host">Chargement…</h1>
       <div class="sub" id="os">—</div>
     </div>
   </div>
   <div class="status">
     <div class="pill"><span class="dot" id="dot"></span><span id="state">Connexion…</span></div>
-    <div>Uptime <strong id="uptime" style="color:var(--txt)">—</strong></div>
-    <div id="clock">—</div>
+    <div class="pill" title="Temps écoulé depuis le dernier démarrage du serveur">
+      <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Allumé depuis <strong id="uptime" style="color:var(--txt)">—</strong>
+    </div>
+    <div class="pill" id="clock">—</div>
   </div>
 </header>
 
-<main>
-  <section class="grid">
-    <div class="card">
-      <div class="label">Processeur</div>
-      <div class="value" id="cpu">—</div>
-      <div class="bar"><i id="cpu-bar"></i></div>
-      <div class="meta" id="cpu-meta">—</div>
-      <svg class="spark" id="spark-cpu" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
-    </div>
+<div class="health" id="health">
+  <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+  <div><b id="health-title">Analyse en cours…</b><span id="health-text">Lecture des capteurs du serveur.</span></div>
+</div>
 
-    <div class="card">
-      <div class="label">Mémoire RAM</div>
-      <div class="value" id="ram">—</div>
-      <div class="bar"><i id="ram-bar"></i></div>
-      <div class="meta" id="ram-meta">—</div>
+<!-- Indicateurs principaux -->
+<section class="grid kpi">
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg></div>
+        <div>Processeur<small id="cpu-cores">—</small></div></div>
+      <span class="badge" id="cpu-badge">—</span>
     </div>
+    <div class="value" id="cpu">—</div>
+    <div class="bar"><i id="cpu-bar"></i></div>
+    <p class="explain">Part de la puissance du processeur utilisée en ce moment.</p>
+  </div>
 
-    <div class="card">
-      <div class="label">Swap</div>
-      <div class="value" id="swap">—</div>
-      <div class="bar"><i id="swap-bar"></i></div>
-      <div class="meta" id="swap-meta">—</div>
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="18" height="10" rx="1.5"/><path d="M7 7V4M11 7V4M15 7V4M7 17v3M11 17v3M15 17v3"/></svg></div>
+        <div>Mémoire (RAM)<small>Mémoire de travail</small></div></div>
+      <span class="badge" id="ram-badge">—</span>
     </div>
+    <div class="value" id="ram">—</div>
+    <div class="bar"><i id="ram-bar"></i></div>
+    <p class="explain" id="ram-meta">—</p>
+  </div>
 
-    <div class="card">
-      <div class="label">Disque /</div>
-      <div class="value" id="disk">—</div>
-      <div class="bar"><i id="disk-bar"></i></div>
-      <div class="meta" id="disk-meta">—</div>
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+        <div>Disque<small>Espace de stockage</small></div></div>
+      <span class="badge" id="disk-badge">—</span>
     </div>
+    <div class="value" id="disk">—</div>
+    <div class="bar"><i id="disk-bar"></i></div>
+    <p class="explain" id="disk-meta">—</p>
+  </div>
 
-    <div class="card span2">
-      <div class="label">Réseau</div>
-      <div class="net" style="margin-top:8px">
-        <div>
-          <div class="meta">Réception ↓</div>
-          <div class="value" id="rx">—</div>
-          <svg class="spark" id="spark-rx" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
-        </div>
-        <div>
-          <div class="meta">Émission ↑</div>
-          <div class="value" id="tx">—</div>
-          <svg class="spark" id="spark-tx" viewBox="0 0 300 70" preserveAspectRatio="none"></svg>
-        </div>
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></div>
+        <div>Réseau<small>Trafic en direct</small></div></div>
+      <span class="badge info">Live</span>
+    </div>
+    <div class="net">
+      <div><div class="dir">↓ Reçu</div><div class="value" id="rx-kpi">—</div></div>
+      <div><div class="dir">↑ Envoyé</div><div class="value" id="tx-kpi">—</div></div>
+    </div>
+    <p class="explain">Débit actuel entre le serveur et Internet.</p>
+  </div>
+</section>
+
+<!-- Détails -->
+<section class="grid">
+  <div class="card span2">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17l5-5 4 4 8-8"/></svg></div>
+        <div>Historique du processeur<small>Les 2 dernières minutes</small></div></div>
+      <span class="badge info" id="cpu-hist-now">—</span>
+    </div>
+    <svg class="spark" id="spark-cpu" viewBox="0 0 300 64" preserveAspectRatio="none"></svg>
+    <div class="legend">Plus la courbe est haute, plus le processeur travaille.</div>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <div>Charge moyenne<small>Tâches en attente</small></div></div>
+    </div>
+    <div class="row"><span class="k">Dernière minute</span><span class="v" id="load1">—</span></div>
+    <div class="row"><span class="k">5 dernières minutes</span><span class="v" id="load5">—</span></div>
+    <div class="row"><span class="k">15 dernières minutes</span><span class="v" id="load15">—</span></div>
+    <p class="explain">Une valeur inférieure au nombre de cœurs signifie que le serveur suit la charge.</p>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h13l-3-3M21 17H8l3 3"/></svg></div>
+        <div>Swap<small>Mémoire d'appoint sur disque</small></div></div>
+      <span class="badge" id="swap-badge">—</span>
+    </div>
+    <div class="row"><span class="k">Utilisé</span><span class="v" id="swap-used">—</span></div>
+    <div class="row"><span class="k">Total</span><span class="v" id="swap-total">—</span></div>
+    <div class="bar"><i id="swap-bar"></i></div>
+    <p class="explain">Servira quand la RAM est pleine. Beaucoup de swap = serveur ralenti.</p>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/></svg></div>
+        <div>Détail du disque<small>Partition racine /</small></div></div>
+    </div>
+    <div class="row"><span class="k">Utilisé</span><span class="v" id="disk-used">—</span></div>
+    <div class="row"><span class="k">Libre</span><span class="v" id="disk-free">—</span></div>
+    <div class="row"><span class="k">Capacité totale</span><span class="v" id="disk-total">—</span></div>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 14.76V5a2 2 0 0 0-4 0v9.76a4 4 0 1 0 4 0z"/></svg></div>
+        <div>Températures<small>Capteurs matériels</small></div></div>
+    </div>
+    <div id="temps"></div>
+  </div>
+
+  <div class="card span2">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h13l-3-3M20 15H7l3 3"/></svg></div>
+        <div>Trafic réseau<small>Historique et totaux</small></div></div>
+    </div>
+    <div class="net">
+      <div>
+        <div class="dir">↓ Reçu</div>
+        <svg class="spark" id="spark-rx" viewBox="0 0 300 64" preserveAspectRatio="none"></svg>
       </div>
-      <div class="meta" id="net-total" style="margin-top:8px">—</div>
-    </div>
-
-    <div class="card">
-      <div class="label">Températures</div>
-      <div id="temps" style="margin-top:10px"></div>
-    </div>
-
-    <div id="gpus" style="display:contents"></div>
-
-    <div class="card full">
-      <div class="label">Processus les plus gourmands (RAM)</div>
-      <div style="overflow-x:auto;margin-top:10px">
-        <table>
-          <thead><tr><th>PID</th><th>Nom</th><th>RAM</th><th></th></tr></thead>
-          <tbody id="procs"></tbody>
-        </table>
+      <div>
+        <div class="dir">↑ Envoyé</div>
+        <svg class="spark" id="spark-tx" viewBox="0 0 300 64" preserveAspectRatio="none"></svg>
       </div>
     </div>
-  </section>
-</main>
+    <div class="meta" id="net-total" style="margin-top:10px">—</div>
+  </div>
 
-<footer>VPS PANEL · MISE À JOUR TOUTES LES 2 SECONDES</footer>
+  <div id="gpus" style="display:contents"></div>
+
+  <div class="card full">
+    <div class="head">
+      <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div>
+        <div>Programmes les plus gourmands<small>Classés par mémoire utilisée</small></div></div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr><th>Programme</th><th>PID</th><th>Mémoire</th><th>Part de la RAM</th></tr></thead>
+        <tbody id="procs"><tr><td colspan="4" class="empty">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="scale">
+  <span><i style="background:var(--ok)"></i>Normal : moins de 60 %</span>
+  <span><i style="background:var(--warn)"></i>Élevé : 60 à 85 %</span>
+  <span><i style="background:var(--crit)"></i>Critique : plus de 85 %</span>
+</div>
+<footer>MISE À JOUR AUTOMATIQUE TOUTES LES 2 SECONDES</footer>
+
 </div>
 
 <script>
@@ -152,13 +267,16 @@ const rate = b => bytes(b) + '/s';
 const uptime = s => {
   s = Math.floor(s);
   const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
-  return (d ? d + 'j ' : '') + h + 'h ' + String(m).padStart(2, '0') + 'min';
+  return (d ? d + ' j ' : '') + h + ' h ' + String(m).padStart(2, '0') + ' min';
 };
-const bar = (id, v) => { const el = $(id); el.style.width = Math.min(v, 100) + '%'; el.classList.toggle('hot', v >= 90); };
+const level = v => v >= 85 ? 'crit' : v >= 60 ? 'warn' : 'ok';
+const LABEL = { ok: 'Normal', warn: 'Élevé', crit: 'Critique' };
+const setBadge = (id, v) => { const el = $(id), l = level(v); el.className = 'badge ' + l; el.textContent = LABEL[l]; };
+const setBar = (id, v) => { const el = $(id), l = level(v); el.style.width = Math.min(v, 100) + '%'; el.className = l === 'ok' ? '' : l; };
 const push = (arr, v) => { arr.push(v); if (arr.length > N) arr.shift(); };
 
 function spark(id, arr) {
-  const svg = $(id), w = 300, h = 70;
+  const svg = $(id), w = 300, h = 64;
   if (arr.length < 2) { svg.innerHTML = ''; return; }
   const max = Math.max(1, ...arr), step = w / (N - 1);
   const pts = arr.map((v, i) => {
@@ -177,14 +295,18 @@ function spark(id, arr) {
 function gpuCards(gpus) {
   if (!gpus || !gpus.length) return '';
   return gpus.map(g => {
-    const vram = g.mem_total ? (100 * g.mem_used / g.mem_total) : 0;
+    const vramPct = g.mem_total ? 100 * g.mem_used / g.mem_total : 0;
     return `
     <div class="card">
-      <div class="label">GPU · ${esc(g.name)}</div>
+      <div class="head">
+        <div class="title"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="10" rx="2"/><circle cx="8" cy="12" r="2.5"/><circle cx="16" cy="12" r="2.5"/></svg></div>
+          <div>Carte graphique<small>${esc(g.name)}</small></div></div>
+        <span class="badge ${level(g.util)}">${LABEL[level(g.util)]}</span>
+      </div>
       <div class="value">${g.util.toFixed(0)}<small>%</small></div>
-      <div class="bar"><i class="${g.util >= 90 ? 'hot' : ''}" style="width:${Math.min(g.util,100)}%"></i></div>
-      <div class="row"><span>VRAM</span><span>${g.mem_used.toFixed(0)} / ${g.mem_total.toFixed(0)} Mo</span></div>
-      <div class="row"><span>Température</span><span>${g.temp.toFixed(0)} °C</span></div>
+      <div class="bar"><i class="${level(g.util) === 'ok' ? '' : level(g.util)}" style="width:${Math.min(g.util,100)}%"></i></div>
+      <div class="row" style="margin-top:8px"><span class="k">Mémoire vidéo (VRAM)</span><span class="v">${g.mem_used.toFixed(0)} / ${g.mem_total.toFixed(0)} Mo (${vramPct.toFixed(0)} %)</span></div>
+      <div class="row"><span class="k">Température</span><span class="v">${g.temp.toFixed(0)} °C</span></div>
     </div>`;
   }).join('');
 }
@@ -193,49 +315,85 @@ function render(d) {
   $('host').textContent = d.hostname;
   $('os').textContent = d.os;
   $('uptime').textContent = uptime(d.uptime_s);
-  $('clock').textContent = new Date().toLocaleTimeString('fr-FR');
+  $('clock').textContent = 'Mis à jour à ' + new Date().toLocaleTimeString('fr-FR');
 
+  // Processeur
   const c = d.cpu.percent;
+  $('cpu-cores').textContent = d.cpu.count + ' cœurs';
   $('cpu').innerHTML = c.toFixed(1) + '<small>%</small>';
-  bar('cpu-bar', c);
-  $('cpu-meta').textContent = `${d.cpu.count} cœurs · charge ${d.cpu.load.map(x => x.toFixed(2)).join(' / ')}`;
+  setBar('cpu-bar', c); setBadge('cpu-badge', c);
   push(hist.cpu, c); spark('spark-cpu', hist.cpu);
+  $('cpu-hist-now').textContent = c.toFixed(0) + ' % en ce moment';
+  $('load1').textContent = d.cpu.load[0].toFixed(2);
+  $('load5').textContent = d.cpu.load[1].toFixed(2);
+  $('load15').textContent = d.cpu.load[2].toFixed(2);
 
+  // RAM
   const r = d.ram.percent;
   $('ram').innerHTML = r.toFixed(1) + '<small>%</small>';
-  bar('ram-bar', r);
-  $('ram-meta').textContent = `${bytes(d.ram.used)} / ${bytes(d.ram.total)}`;
+  setBar('ram-bar', r); setBadge('ram-badge', r);
+  $('ram-meta').textContent = `${bytes(d.ram.used)} utilisés sur ${bytes(d.ram.total)} · ${bytes(d.ram.total - d.ram.used)} disponibles`;
 
+  // Swap
   const s = d.swap.percent;
-  $('swap').innerHTML = s.toFixed(1) + '<small>%</small>';
-  bar('swap-bar', s);
-  $('swap-meta').textContent = `${bytes(d.swap.used)} / ${bytes(d.swap.total)}`;
+  $('swap-used').textContent = bytes(d.swap.used) + ' (' + s.toFixed(0) + ' %)';
+  $('swap-total').textContent = bytes(d.swap.total);
+  setBar('swap-bar', s); setBadge('swap-badge', s);
 
+  // Disque
   const k = d.disk.percent;
   $('disk').innerHTML = k.toFixed(1) + '<small>%</small>';
-  bar('disk-bar', k);
-  $('disk-meta').textContent = `${bytes(d.disk.used)} / ${bytes(d.disk.total)}`;
+  setBar('disk-bar', k); setBadge('disk-badge', k);
+  $('disk-meta').textContent = `${bytes(d.disk.used)} utilisés sur ${bytes(d.disk.total)}`;
+  $('disk-used').textContent = bytes(d.disk.used);
+  $('disk-free').textContent = bytes(d.disk.total - d.disk.used);
+  $('disk-total').textContent = bytes(d.disk.total);
 
-  $('rx').textContent = rate(d.net.rx_bps);
-  $('tx').textContent = rate(d.net.tx_bps);
-  $('net-total').textContent = `Total depuis le démarrage : ↓ ${bytes(d.net.rx_total)} · ↑ ${bytes(d.net.tx_total)}`;
+  // Réseau
+  $('rx-kpi').textContent = rate(d.net.rx_bps);
+  $('tx-kpi').textContent = rate(d.net.tx_bps);
   push(hist.rx, d.net.rx_bps); push(hist.tx, d.net.tx_bps);
   spark('spark-rx', hist.rx); spark('spark-tx', hist.tx);
+  $('net-total').textContent = `Depuis le démarrage : ↓ ${bytes(d.net.rx_total)} reçus · ↑ ${bytes(d.net.tx_total)} envoyés`;
 
+  // Températures
   const temps = Object.entries(d.temps || {});
   $('temps').innerHTML = temps.length
-    ? temps.map(([n, v]) => `<div class="row"><span>${esc(n)}</span><span>${v.toFixed(1)} °C</span></div>`).join('')
-    : '<div class="empty">Non exposé par ce VPS (virtualisé)</div>';
+    ? temps.map(([n, v]) => `<div class="row"><span class="k">${esc(n)}</span><span class="v" style="color:${level(v) === 'crit' ? 'var(--crit)' : level(v) === 'warn' ? 'var(--warn)' : 'var(--cyan)'}">${v.toFixed(1)} °C</span></div>`).join('')
+    : '<div class="empty">Ce VPS ne fournit pas de capteur de température (serveur virtuel).</div>';
 
+  // GPU
   $('gpus').innerHTML = gpuCards(d.gpus);
 
-  $('procs').innerHTML = (d.processes || []).map(p => `
-    <tr>
-      <td>${p.pid}</td>
-      <td>${esc(p.name)}</td>
-      <td>${p.mem.toFixed(1)} %</td>
-      <td><div class="mini"><i style="display:block;height:100%;width:${Math.min(p.mem * 4, 100)}%;background:linear-gradient(90deg,#1d4ed8,#38bdf8)"></i></div></td>
-    </tr>`).join('');
+  // Processus
+  const total = d.ram.total;
+  $('procs').innerHTML = (d.processes || []).length
+    ? d.processes.map(p => `
+      <tr>
+        <td>${esc(p.name)}</td>
+        <td>${p.pid}</td>
+        <td>${bytes(p.mem / 100 * total)}</td>
+        <td><div class="mini"><i style="display:block;height:100%;width:${Math.min(p.mem * 4, 100)}%;background:linear-gradient(90deg,#1d4ed8,#38bdf8)"></i></div></td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" class="empty">Aucun programme à afficher.</td></tr>';
+
+  // Bannière de santé
+  const issues = [];
+  if (c >= 85) issues.push('processeur très sollicité'); else if (c >= 60) issues.push('processeur chargé');
+  if (r >= 85) issues.push('mémoire presque pleine'); else if (r >= 60) issues.push('mémoire élevée');
+  if (k >= 85) issues.push('disque presque plein'); else if (k >= 60) issues.push('disque bien rempli');
+  if (s >= 60) issues.push('swap utilisé');
+  temps.forEach(([n, v]) => { if (v >= 85) issues.push(n + ' trop chaud'); });
+  (d.gpus || []).forEach(g => { if (g.util >= 85) issues.push('GPU très sollicité'); });
+
+  const crit = issues.some(x => /très|presque|trop chaud/.test(x));
+  const h = $('health');
+  h.className = 'health' + (issues.length ? (crit ? ' crit' : ' warn') : '');
+  $('health-title').textContent = !issues.length ? 'Serveur en bonne santé' : crit ? 'Attention, serveur sous forte charge' : 'Serveur fonctionnel, à surveiller';
+  $('health-text').textContent = !issues.length ? 'Tous les indicateurs sont dans les valeurs normales.' : 'Points à surveiller : ' + issues.join(', ') + '.';
+  h.querySelector('.ic').innerHTML = !issues.length
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>';
 }
 
 async function tick() {
