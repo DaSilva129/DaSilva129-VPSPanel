@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VPS Panel</title>
+<style>
+:root{--bg:#0f1218;--card:#181d27;--txt:#e6e9ef;--mut:#8a93a6;--acc:#4f8cff;--warn:#f1c40f;--bad:#e74c3c;--line:#262d3b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:20px}
+header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+h1{font-size:1.4rem;margin:0}
+.sub{color:var(--mut);font-size:.85rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--card);border-radius:12px;padding:16px;min-width:0}
+.card h2{font-size:.8rem;margin:0 0 12px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.big{font-size:1.8rem;font-weight:700}
+.row{display:flex;justify-content:space-between;gap:8px;font-size:.85rem;color:var(--mut);margin-top:8px;flex-wrap:wrap}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:8px}
+.bar>div{height:100%;background:var(--acc);transition:width .4s}
+.kv{display:flex;justify-content:space-between;font-size:.85rem;padding:5px 0;border-bottom:1px solid var(--line);gap:8px}
+.kv:last-child{border-bottom:none}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+td,th{padding:6px 4px;text-align:left;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:500}
+.err{color:var(--bad)}
+</style>
+</head>
+<body>
+<header>
+  <h1>🖥️ VPS Panel</h1>
+  <div class="sub" id="meta">Connexion...</div>
+</header>
+<div class="grid" id="grid"></div>
+
+<script>
+const fmtBytes = n => {
+  const u = ['B', 'KB', 'MB', 'GB', 'TB'];
+  let i = 0;
+  while (n >= 1024 && i < u.length - 1) { n /= 1024; i++; }
+  return n.toFixed(i ? 1 : 0) + ' ' + u[i];
+};
+const fmtRate = n => fmtBytes(n) + '/s';
+const fmtUp = s => {
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  return (d ? d + 'j ' : '') + h + 'h ' + m + 'min';
+};
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const bar = p => {
+  const color = p > 85 ? 'var(--bad)' : p > 60 ? 'var(--warn)' : 'var(--acc)';
+  return `<div class="bar"><div style="width:${Math.min(p, 100)}%;background:${color}"></div></div>`;
+};
+const card = (title, body) => `<div class="card"><h2>${title}</h2>${body}</div>`;
+const kv = (k, v) => `<div class="kv"><span>${esc(k)}</span><span>${esc(v)}</span></div>`;
+
+function render(d) {
+  const cards = [
+    card('CPU', `<div class="big">${d.cpu.percent.toFixed(1)}%</div>${bar(d.cpu.percent)}
+      <div class="row"><span>${d.cpu.count} cœurs</span><span>Load ${d.cpu.load.map(x => x.toFixed(2)).join(' / ')}</span></div>`),
+
+    card('RAM', `<div class="big">${d.ram.percent.toFixed(1)}%</div>${bar(d.ram.percent)}
+      <div class="row"><span>${fmtBytes(d.ram.used)} / ${fmtBytes(d.ram.total)}</span><span>Swap ${d.swap.percent.toFixed(0)}%</span></div>`),
+
+    card('Disque /', `<div class="big">${d.disk.percent.toFixed(1)}%</div>${bar(d.disk.percent)}
+      <div class="row"><span>${fmtBytes(d.disk.used)} / ${fmtBytes(d.disk.total)}</span></div>`),
+
+    card('Réseau', `<div class="row" style="margin:0;font-size:1.1rem;color:var(--txt)">
+        <span>↓ ${fmtRate(d.net.rx_bps)}</span><span>↑ ${fmtRate(d.net.tx_bps)}</span></div>
+      <div class="row"><span>Reçu ${fmtBytes(d.net.rx_total)}</span><span>Envoyé ${fmtBytes(d.net.tx_total)}</span></div>`),
+
+    card('Températures', Object.keys(d.temps).length
+      ? Object.entries(d.temps).map(([k, v]) => kv(k, v + ' °C')).join('')
+      : '<div class="row">Aucun capteur exposé (fréquent sur un VPS)</div>'),
+
+    ...d.gpus.map(g => card('GPU · ' + esc(g.name), `<div class="big">${g.util.toFixed(0)}%</div>${bar(g.util)}
+      <div class="row"><span>VRAM ${g.mem_used.toFixed(0)} / ${g.mem_total.toFixed(0)} Mo</span><span>${g.temp} °C</span></div>`)),
+
+    card('Top processus (RAM)', `<table><tr><th>Nom</th><th>PID</th><th>RAM</th></tr>
+      ${d.processes.map(p => `<tr><td>${esc(p.name)}</td><td>${p.pid}</td><td>${p.mem.toFixed(1)}%</td></tr>`).join('')}
+      </table>`),
+
+    card('Système', kv('Uptime', fmtUp(d.uptime_s)) + kv('OS', d.os))
+  ];
+
+  document.getElementById('grid').innerHTML = cards.join('');
+  document.getElementById('meta').textContent =
+    d.hostname + ' · mis à jour ' + new Date().toLocaleTimeString('fr-FR');
+}
+
+async function tick() {
+  try {
+    const res = await fetch('/api/metrics', { cache: 'no-store' });
+    render(await res.json());
+  } catch (e) {
+    document.getElementById('meta').innerHTML = '<span class="err">Connexion perdue</span>';
+  }
+}
+
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>
